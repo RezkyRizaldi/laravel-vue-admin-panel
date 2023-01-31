@@ -1,0 +1,27 @@
+{
+    "private": true,
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build"
+    },
+    "devDependencies": {
+        "@prettier/plugin-php": "github:prettier/plugin-php",
+        "axios": "^1.1.2",
+        "laravel-vite-plugin": "^0.7.2",
+        "lodash": "^4.17.19",
+        "postcss": "^8.1.14",
+        "prettier": "^2.8.3",
+        "vite": "^4.0.0"
+    },
+    "dependencies": {
+        "@vitejs/plugin-vue": "^4.0.0",
+        "admin-lte": "^3.2.0",
+        "jquery": "^3.6.3",
+        "laravel-vue-pagination": "^4.0.0",
+        "toastr": "^2.1.4",
+        "vee-validate": "^4.7.3",
+        "vue": "^3.2.45",
+        "vue-router": "^4.1.6",
+        "yup": "^0.32.11"
+    }
+}
