@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AppointmentController;
 use App\Http\Controllers\Admin\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -23,3 +24,4 @@ Route::patch('/users/{user}/change-role', [UserController::class, 'changeRole'])
 Route::get('/users/search', [UserController::class, 'search'])->name('users.search');
 Route::delete('/users', [UserController::class, 'bulkDelete'])->name('users.bulkDelete');
 Route::apiResource('users', UserController::class)->except('show');
+Route::apiResource('appointments', AppointmentController::class);

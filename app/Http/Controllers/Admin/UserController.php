@@ -40,7 +40,7 @@ class UserController extends Controller
             'password' => ['sometimes', Password::defaults()],
         ]);
 
-        if (!empty($request->input('password'))) {
+        if (! empty($request->input('password'))) {
             $data['password'] = bcrypt($request->input('password'));
         } else {
             $data['password'] = $user->password;
