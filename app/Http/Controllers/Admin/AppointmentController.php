@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\AppointmentStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Appointment;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -13,9 +15,10 @@ class AppointmentController extends Controller
     {
         $appointments = Appointment::query()
             ->with('client:id,first_name,last_name')
+            ->when(request('status'), fn (Builder $query) => $query->where('status', AppointmentStatus::from(request('status'))))
             ->latest()
             ->paginate()
-            ->through(fn ($appointment) => [
+            ->through(fn (Appointment $appointment) => [
                 'id' => $appointment->id,
                 'start_time' => $appointment->start_time->format('Y-m-d h:i A'),
                 'end_time' => $appointment->end_time->format('Y-m-d h:i A'),

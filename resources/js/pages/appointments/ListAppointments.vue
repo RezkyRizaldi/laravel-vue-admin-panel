@@ -30,19 +30,37 @@
 								</a>
 							</div>
 							<div class="btn-group">
-								<button type="button" class="btn btn-secondary">
+								<button
+									type="button"
+									class="btn btn-secondary"
+									@click="getAppointments"
+								>
 									<span class="mr-1">All</span>
 									<span class="badge badge-pill badge-info">1</span>
 								</button>
-
-								<button type="button" class="btn btn-default">
+								<button
+									type="button"
+									class="btn btn-default"
+									@click="getAppointments(appointmentStatus.scheduled)"
+								>
 									<span class="mr-1">Scheduled</span>
 									<span class="badge badge-pill badge-primary">0</span>
 								</button>
-
-								<button type="button" class="btn btn-default">
-									<span class="mr-1">Closed</span>
+								<button
+									type="button"
+									class="btn btn-default"
+									@click="getAppointments(appointmentStatus.confirmed)"
+								>
+									<span class="mr-1">Confirmed</span>
 									<span class="badge badge-pill badge-success">1</span>
+								</button>
+								<button
+									type="button"
+									class="btn btn-default"
+									@click="getAppointments(appointmentStatus.cancelled)"
+								>
+									<span class="mr-1">Cancelled</span>
+									<span class="badge badge-pill badge-danger">1</span>
 								</button>
 							</div>
 						</div>
@@ -83,7 +101,6 @@
 													<span class="sr-only">Edit</span>
 													<i class="fa fa-edit mr-2"></i>
 												</a>
-
 												<a href="#">
 													<span class="sr-only">Delete</span>
 													<i class="fa fa-trash text-danger"></i>
@@ -105,10 +122,17 @@
 import { onMounted, ref } from "vue";
 
 const appointments = ref([]);
+const appointmentStatus = { scheduled: 1, confirmed: 2, cancelled: 3 };
 
-const getAppointments = async () => {
+const getAppointments = async (status) => {
+	const params = {};
+
+	if (status) {
+		params.status = status;
+	}
+
 	try {
-		const { data } = await axios.get("/api/appointments");
+		const { data } = await axios.get("/api/appointments", { params });
 
 		appointments.value = data;
 	} catch (error) {
