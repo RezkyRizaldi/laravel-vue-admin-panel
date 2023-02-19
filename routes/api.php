@@ -24,4 +24,5 @@ Route::patch('/users/{user}/change-role', [UserController::class, 'changeRole'])
 Route::get('/users/search', [UserController::class, 'search'])->name('users.search');
 Route::delete('/users', [UserController::class, 'bulkDelete'])->name('users.bulkDelete');
 Route::apiResource('users', UserController::class)->except('show');
+Route::get('/appointment-status', [AppointmentController::class, 'getStatusWithCount'])->name('appointments.status');
 Route::apiResource('appointments', AppointmentController::class);

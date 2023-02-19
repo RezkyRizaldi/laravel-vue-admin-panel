@@ -30,64 +30,23 @@
 			<button
 				class="btn btn-info"
 				type="button"
-				@click.prevent="editUser(user)"
+				@click.prevent="$emit('editUser', user)"
 			>
 				<i class="fa fa-edit"></i>
 			</button>
 			<button
 				class="btn btn-danger ml-2"
 				type="button"
-				@click.prevent="deleteUser(user)"
+				@click.prevent="$emit('deleteUser', user.id)"
 			>
 				<i class="fa fa-trash"></i>
 			</button>
 		</td>
 	</tr>
-	<div
-		class="modal fade"
-		id="userDeleteModal"
-		data-backdrop="static"
-		tabindex="-1"
-		role="dialog"
-		aria-labelledby="userDeleteModalLabel"
-		aria-hidden="true"
-	>
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="userDeleteModalLabel">Delete User</h5>
-					<button
-						type="button"
-						class="close"
-						data-dismiss="modal"
-						aria-label="Close"
-					>
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<h5>Are you sure you want to delete this user?</h5>
-				</div>
-				<div class="modal-footer">
-					<button type="button" class="btn btn-secondary" data-dismiss="modal">
-						Cancel
-					</button>
-					<button
-						type="button"
-						class="btn btn-danger"
-						@click.prevent="destroyUser"
-					>
-						Delete
-					</button>
-				</div>
-			</div>
-		</div>
-	</div>
 </template>
 
 <script setup>
 import { ref } from "vue";
-
 import { useToastr } from "../../toastr";
 
 const props = defineProps({
@@ -96,9 +55,8 @@ const props = defineProps({
 	selectAll: { type: Boolean, required: true },
 });
 
-const emit = defineEmits(["userDeleted", "editUser", "toggleSelection"]);
+const emit = defineEmits(["editUser", "deleteUser", "toggleSelection"]);
 
-const userId = ref(null);
 const roles = ref([
 	{
 		name: "ADMIN",
@@ -111,27 +69,6 @@ const roles = ref([
 ]);
 
 const toastr = useToastr();
-
-const editUser = (user) => {
-	emit("editUser", user);
-};
-
-const deleteUser = (user) => {
-	userId.value = user.id;
-	$("#userDeleteModal").modal("show");
-};
-
-const destroyUser = async () => {
-	try {
-		await axios.delete(`/api/users/${userId.value}`);
-
-		$("#userDeleteModal").modal("hide");
-		toastr.success("User deleted successfully!");
-		emit("userDeleted", userId.value);
-	} catch (error) {
-		toastr.error(error);
-	}
-};
 
 const changeRole = async (user, role) => {
 	try {

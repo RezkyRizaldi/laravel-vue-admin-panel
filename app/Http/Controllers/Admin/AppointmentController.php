@@ -8,6 +8,7 @@ use App\Models\Appointment;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 
 class AppointmentController extends Controller
 {
@@ -75,5 +76,17 @@ class AppointmentController extends Controller
     public function destroy(Appointment $appointment)
     {
         //
+    }
+
+    public function getStatusWithCount(): Collection
+    {
+        return collect(AppointmentStatus::cases())->map(
+            fn (AppointmentStatus $status) => [
+                'name' => $status->name,
+                'value' => $status->value,
+                'count' => Appointment::where('status', $status->value)->count(),
+                'color' => AppointmentStatus::from($status->value)->color(),
+            ]
+        );
     }
 }

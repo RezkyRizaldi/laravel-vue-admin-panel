@@ -77,7 +77,7 @@
 								:user="user"
 								:index="index"
 								@editUser="editUser"
-								@userDeleted="userDeleted"
+								@deleteUser="deleteUser"
 								@toggleSelection="toggleSelection"
 								:selectAll="selectAll"
 							/>
@@ -176,6 +176,46 @@
 			</div>
 		</div>
 	</div>
+	<div
+		class="modal fade"
+		id="userDeleteModal"
+		data-backdrop="static"
+		tabindex="-1"
+		role="dialog"
+		aria-labelledby="userDeleteModalLabel"
+		aria-hidden="true"
+	>
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="userDeleteModalLabel">Delete User</h5>
+					<button
+						type="button"
+						class="close"
+						data-dismiss="modal"
+						aria-label="Close"
+					>
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<h5>Are you sure you want to delete this user?</h5>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">
+						Cancel
+					</button>
+					<button
+						type="button"
+						class="btn btn-danger"
+						@click.prevent="destroyUser"
+					>
+						Delete
+					</button>
+				</div>
+			</div>
+		</div>
+	</div>
 </template>
 
 <script setup>
@@ -191,6 +231,7 @@ import { useToastr } from "../../toastr";
 const users = ref({ data: [] });
 const editing = ref(false);
 const formValues = ref({});
+const userId = ref(null);
 const searchQuery = ref("");
 const selectedUsers = ref([]);
 const selectAll = ref(false);
@@ -281,16 +322,32 @@ const updateUser = async (values, { resetForm, setErrors }) => {
 	}
 };
 
+const deleteUser = (id) => {
+	userId.value = id;
+	$("#userDeleteModal").modal("show");
+};
+
+const destroyUser = async () => {
+	try {
+		await axios.delete(`/api/users/${userId.value}`);
+
+		users.value.data = users.value.data.filter(
+			(user) => user.id !== userId.value
+		);
+
+		$("#userDeleteModal").modal("hide");
+		toastr.success("User deleted successfully!");
+	} catch (error) {
+		toastr.error(error);
+	}
+};
+
 const handleSubmit = (values, actions) => {
 	if (editing.value) {
 		updateUser(values, actions);
 	} else {
 		storeUser(values, actions);
 	}
-};
-
-const userDeleted = (userId) => {
-	users.value.data = users.value.data.filter((user) => user.id !== userId);
 };
 
 const searchUser = async () => {
