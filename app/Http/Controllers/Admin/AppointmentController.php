@@ -33,21 +33,23 @@ class AppointmentController extends Controller
         return response()->json($appointments);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
-        //
+        Appointment::create([
+            'title' => $request->input('title'),
+            'client_id' => 1,
+            'start_time' => now(),
+            'end_time' => now(),
+            'description' => $request->input('description'),
+            'status' => AppointmentStatus::SCHEDULED,
+        ]);
+
+        return response()->json(['message' => 'Success']);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\Appointment  $appointment
      * @return \Illuminate\Http\Response
      */
     public function show(Appointment $appointment)
@@ -58,8 +60,6 @@ class AppointmentController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\Appointment  $appointment
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Appointment $appointment)
@@ -70,7 +70,6 @@ class AppointmentController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\Appointment  $appointment
      * @return \Illuminate\Http\Response
      */
     public function destroy(Appointment $appointment)
