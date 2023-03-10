@@ -34,32 +34,65 @@
 												v-model="form.title"
 												type="text"
 												class="form-control"
+												:class="{ 'is-invalid': errors.title }"
 												id="title"
 												placeholder="Enter Title"
 											/>
+											<span class="invalid-feedback">{{ errors.title }}</span>
 										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="form-group">
 											<label for="client">Client Name</label>
-											<select id="client" class="form-control">
-												<option>Client One</option>
-												<option>Client Two</option>
+											<select
+												v-model="form.client_id"
+												id="client"
+												class="form-control"
+												:class="{ 'is-invalid': errors.client_id }"
+											>
+												<option
+													v-for="client in clients"
+													:key="client.id"
+													:value="client.id"
+												>
+													{{ client.first_name }} {{ client.last_name }}
+												</option>
 											</select>
+											<span class="invalid-feedback">{{
+												errors.client_id
+											}}</span>
 										</div>
 									</div>
 								</div>
 								<div class="row">
 									<div class="col-md-6">
 										<div class="form-group">
-											<label for="date">Appointment Date</label>
-											<input type="date" class="form-control" id="date" />
+											<label for="startTime">Start Time</label>
+											<input
+												v-model="form.start_time"
+												type="text"
+												class="form-control flatpickr"
+												:class="{ 'is-invalid': errors.start_time }"
+												id="startTime"
+											/>
+											<span class="invalid-feedback">{{
+												errors.start_time
+											}}</span>
 										</div>
 									</div>
 									<div class="col-md-6">
 										<div class="form-group">
-											<label for="time">Appointment Time</label>
-											<input type="time" class="form-control" id="time" />
+											<label for="endTime">End Time</label>
+											<input
+												v-model="form.end_time"
+												type="text"
+												class="form-control flatpickr"
+												:class="{ 'is-invalid': errors.end_time }"
+												id="endTime"
+											/>
+											<span class="invalid-feedback">{{
+												errors.end_time
+											}}</span>
 										</div>
 									</div>
 								</div>
@@ -68,10 +101,12 @@
 									<textarea
 										v-model="form.description"
 										class="form-control"
+										:class="{ 'is-invalid': errors.description }"
 										id="description"
 										rows="3"
 										placeholder="Enter Description"
 									></textarea>
+									<span class="invalid-feedback">{{ errors.description }}</span>
 								</div>
 								<button type="submit" class="btn btn-primary">Submit</button>
 							</form>
@@ -84,16 +119,20 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
+import flatpickr from "flatpickr";
+import "flatpickr/dist/themes/light.css";
+import { onMounted, reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 
 import { useToastr } from "../../toastr";
 
+const clients = ref([]);
+
 const form = reactive({
 	title: "",
 	client_id: "",
-	start_date: "",
 	start_time: "",
+	end_time: "",
 	description: "",
 });
 
@@ -111,4 +150,23 @@ const handleSubmit = async () => {
 		console.error(error);
 	}
 };
+
+const getClients = async () => {
+	try {
+		const { data } = await axios.get("/api/clients");
+
+		clients.value = data;
+	} catch (error) {
+		console.error(error);
+	}
+};
+
+onMounted(() => {
+	flatpickr(".flatpickr", {
+		enableTime: true,
+		dateFormat: "Y-m-d h:i K",
+		defaultHour: 10,
+	});
+	getClients();
+});
 </script>

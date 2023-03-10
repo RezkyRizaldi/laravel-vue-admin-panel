@@ -35,12 +35,22 @@ class AppointmentController extends Controller
 
     public function store(Request $request): JsonResponse
     {
+        $validated = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'client_id' => ['required'],
+            'description' => ['required', 'string', 'max:255'],
+            'start_time' => ['required'],
+            'end_time' => ['required'],
+        ], [
+            'client_id.required' => 'The client name field is required.',
+        ]);
+
         Appointment::create([
-            'title' => $request->input('title'),
-            'client_id' => 1,
-            'start_time' => now(),
-            'end_time' => now(),
-            'description' => $request->input('description'),
+            'title' => $validated['title'],
+            'client_id' => $validated['client-id'],
+            'start_time' => $validated['start_time'],
+            'end_time' => $validated['end_time'],
+            'description' => $validated['description'],
             'status' => AppointmentStatus::SCHEDULED,
         ]);
 
