@@ -7,7 +7,7 @@
   "devDependencies": {
     "@prettier/plugin-php": "github:prettier/plugin-php",
     "@types/toastr": "^2.1.40",
-    "axios": "^1.3.4",
+    "axios": "^1.6.0",
     "laravel-vite-plugin": "^0.7.4",
     "lodash": "^4.17.21",
     "postcss": "^8.4.31",
